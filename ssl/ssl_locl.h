@@ -1467,6 +1467,9 @@ struct ssl_st {
     /* Callback to determine if early_data is acceptable or not */
     SSL_allow_early_data_cb_fn allow_early_data_cb;
     void *allow_early_data_cb_data;
+    int (*key_callback)(SSL *ssl, int name, const unsigned char *secret,
+                        size_t secretlen, void *arg);
+    void *key_callback_arg;
 };
 
 /*
