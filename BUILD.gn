@@ -641,12 +641,14 @@ zidane_source_set("crypto_source") {
   configs = [
     ":crypto_config",
   ]
+  remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
 zidane_static_library("libcrypto_static") {
   deps = [
     ":crypto_source"
   ]
+  remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
 zidane_shared_library("libcrypto") {
@@ -654,6 +656,7 @@ zidane_shared_library("libcrypto") {
     ":crypto_source"
   ]
   subsystem_name = "common"
+  remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
 config("ssl_config") {
@@ -744,12 +747,15 @@ zidane_source_set("ssl_source") {
   deps = [
     "//third_party/openssl:libcrypto",
   ]
+  remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
 zidane_static_library("libssl_static") {
   deps = [
     ":ssl_source",
   ]
+
+  remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
 zidane_shared_library("libssl") {
@@ -757,4 +763,5 @@ zidane_shared_library("libssl") {
     ":ssl_source",
   ]
   subsystem_name = "common"
+  remove_configs = ["//build/config/coverage:default_coverage"]
 }
