@@ -8,7 +8,6 @@ config("crypto_config") {
     "./crypto/modes",
     "./crypto/ec/curve448",
     "./crypto/ec/curve448/arch_32",
-    "//prebuilts/clang/host/linux-x86/clang-r339409b/lib64/clang/8.0.2/include",
   ]
   cflags = [
     "-DNDEBUG",
@@ -665,7 +664,6 @@ config("ssl_config") {
     "./crypto/include",
     "./include",
     "./crypto/modes",
-    "//prebuilts/clang/host/linux-x86/clang-r339409b/lib64/clang/8.0.2/include",
   ]
   cflags = [
     "-DNDEBUG",
