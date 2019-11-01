@@ -778,6 +778,5 @@ void OPENSSL_fork_parent(void)
 
 void OPENSSL_fork_child(void)
 {
-    rand_fork();
 }
 #endif

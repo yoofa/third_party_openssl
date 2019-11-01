@@ -612,13 +612,6 @@ MSG_PROCESS_RETURN tls_process_key_update(SSL *s, PACKET *pkt)
 {
     unsigned int updatetype;
 
-    s->key_update_count++;
-    if (s->key_update_count > MAX_KEY_UPDATE_MESSAGES) {
-        SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_F_TLS_PROCESS_KEY_UPDATE,
-                 SSL_R_TOO_MANY_KEY_UPDATES);
-        return MSG_PROCESS_ERROR;
-    }
-
     /*
      * A KeyUpdate message signals a key change so the end of the message must
      * be on a record boundary.
@@ -1030,7 +1023,16 @@ WORK_STATE tls_finish_handshake(SSL *s, WORK_STATE wst, int clearbufs, int stop)
     void (*cb) (const SSL *ssl, int type, int val) = NULL;
 
     if (clearbufs) {
-        if (!SSL_IS_DTLS(s)) {
+        if (!SSL_IS_DTLS(s)
+#ifndef OPENSSL_NO_SCTP
+                    /*
+                      * RFC 6083: SCTP provides a reliable and in-sequence transport service for DTLS messages that require it.
+                      * Therefore, DTLS procedures for retransmissions MUST NOT be used.
+                      * Hence the init_buf can be cleared when DTLS over SCTP as transport is used.
+                     */
+                    || BIO_dgram_is_sctp(SSL_get_wbio(s))
+#endif
+                    ) {
             /*
              * We don't do this in DTLS because we may still need the init_buf
              * in case there are any unexpected retransmits
@@ -1038,6 +1040,7 @@ WORK_STATE tls_finish_handshake(SSL *s, WORK_STATE wst, int clearbufs, int stop)
             BUF_MEM_free(s->init_buf);
             s->init_buf = NULL;
         }
+
         if (!ssl_free_wbio_buffer(s)) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_FINISH_HANDSHAKE,
                      ERR_R_INTERNAL_ERROR);

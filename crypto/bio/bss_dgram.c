@@ -51,6 +51,8 @@ static int dgram_sctp_write(BIO *h, const char *buf, int num);
 static int dgram_sctp_read(BIO *h, char *buf, int size);
 static int dgram_sctp_puts(BIO *h, const char *str);
 static long dgram_sctp_ctrl(BIO *h, int cmd, long arg1, void *arg2);
+static int dgram_sctp_wait_for_dry(BIO *b);
+static int dgram_sctp_msg_waiting(BIO *b);
 static int dgram_sctp_new(BIO *h);
 static int dgram_sctp_free(BIO *data);
 #  ifdef SCTP_AUTHENTICATION_EVENT
@@ -1563,6 +1565,10 @@ static long dgram_sctp_ctrl(BIO *b, int cmd, long num, void *ptr)
             data->save_shutdown = 0;
         break;
 
+    case BIO_CTRL_DGRAM_SCTP_WAIT_FOR_DRY:
+        return dgram_sctp_wait_for_dry(b);
+    case BIO_CTRL_DGRAM_SCTP_MSG_WAITING:
+        return dgram_sctp_msg_waiting(b);
     default:
         /*
          * Pass to default ctrl function to process SCTP unspecific commands
@@ -1605,6 +1611,17 @@ int BIO_dgram_sctp_notification_cb(BIO *b,
  *  1 when dry
  */
 int BIO_dgram_sctp_wait_for_dry(BIO *b)
+{
+    return (int)BIO_ctrl(b, BIO_CTRL_DGRAM_SCTP_WAIT_FOR_DRY, 0, NULL);
+}
+
+int BIO_dgram_sctp_msg_waiting(BIO *b)
+{
+    return (int)BIO_ctrl(b, BIO_CTRL_DGRAM_SCTP_MSG_WAITING, 0, NULL);
+}
+
+
+static int dgram_sctp_wait_for_dry(BIO *b)
 {
     int is_dry = 0;
     int sockflags = 0;
@@ -1762,7 +1779,7 @@ int BIO_dgram_sctp_wait_for_dry(BIO *b)
     return is_dry;
 }
 
-int BIO_dgram_sctp_msg_waiting(BIO *b)
+static int dgram_sctp_msg_waiting(BIO *b)
 {
     int n, sockflags;
     union sctp_notification snp;

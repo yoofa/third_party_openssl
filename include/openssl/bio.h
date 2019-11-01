@@ -141,6 +141,8 @@ extern "C" {
 #  define BIO_CTRL_DGRAM_SCTP_GET_PRINFO                  64
 #  define BIO_CTRL_DGRAM_SCTP_SET_PRINFO                  65
 #  define BIO_CTRL_DGRAM_SCTP_SAVE_SHUTDOWN               70
+# define BIO_CTRL_DGRAM_SCTP_WAIT_FOR_DRY                 77
+# define BIO_CTRL_DGRAM_SCTP_MSG_WAITING                  78
 # endif
 
 # define BIO_CTRL_DGRAM_SET_PEEK_MODE      71

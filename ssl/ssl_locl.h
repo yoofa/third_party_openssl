@@ -1170,8 +1170,6 @@ struct ssl_st {
     EVP_CIPHER_CTX *enc_write_ctx; /* cryptographic state */
     unsigned char write_iv[EVP_MAX_IV_LENGTH]; /* TLSv1.3 static write IV */
     EVP_MD_CTX *write_hash;     /* used for mac generation */
-    /* Count of how many KeyUpdate messages we have received */
-    unsigned int key_update_count;
     /* session info */
     /* client cert? */
     /* This is used to hold the server certificate used */
@@ -1467,9 +1465,6 @@ struct ssl_st {
     /* Callback to determine if early_data is acceptable or not */
     SSL_allow_early_data_cb_fn allow_early_data_cb;
     void *allow_early_data_cb_data;
-    int (*key_callback)(SSL *ssl, int name, const unsigned char *secret,
-                        size_t secretlen, void *arg);
-    void *key_callback_arg;
 };
 
 /*
