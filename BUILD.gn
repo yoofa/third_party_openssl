@@ -647,6 +647,7 @@ zidane_static_library("libcrypto_static") {
   deps = [
     ":crypto_source"
   ]
+  complete_static_lib = true
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
@@ -1412,7 +1413,7 @@ zidane_static_library("libssl_static") {
   deps = [
     ":ssl_source",
   ]
-
+  complete_static_lib = true
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
