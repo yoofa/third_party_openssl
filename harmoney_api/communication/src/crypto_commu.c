@@ -96,7 +96,8 @@ ssize_t CryptoCommuDecrypt(const uint8_t *key, const void *in, size_t inLen, voi
 
         int inBufLen = (int)(inLen);
         int outBufLen = 0;
-        if (EVP_DecryptUpdate(ctx, outBuf, &outBufLen, inBuf + GCM_IV_BYTES, inBufLen) != 1) {
+        if (EVP_DecryptUpdate(ctx, outBuf, &outBufLen, inBuf + GCM_IV_BYTES, inBufLen - GCM_IV_BYTES - AES_BLOCK_SIZE)
+            != 1) {
             DB_LOGE("%s: update fail!\n", __func__);
             break;
         }
@@ -113,7 +114,7 @@ ssize_t CryptoCommuDecrypt(const uint8_t *key, const void *in, size_t inLen, voi
         }
         EVP_CIPHER_CTX_free(ctx);
         DB_LOGD("decrypt success");
-        return outBufLen - overheadLen;
+        return outBufLen;
     } while (0);
     // error handler
     EVP_CIPHER_CTX_free(ctx);
