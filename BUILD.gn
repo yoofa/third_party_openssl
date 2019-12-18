@@ -1,4 +1,4 @@
-import("//build/zidane.gni")
+import("//build/harmonyos.gni")
 
 config("crypto_config") {
   include_dirs = [
@@ -30,7 +30,7 @@ config("crypto_config") {
   ]
 }
 
-zidane_source_set("crypto_source") {
+harmonyos_source_set("crypto_source") {
   sources = [
     "crypto/aes/aes_cbc.c",
     "crypto/aes/aes_cfb.c",
@@ -643,7 +643,7 @@ zidane_source_set("crypto_source") {
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
-zidane_static_library("libcrypto_static") {
+harmonyos_static_library("libcrypto_static") {
   deps = [
     ":crypto_source"
   ]
@@ -651,7 +651,7 @@ zidane_static_library("libcrypto_static") {
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
-zidane_shared_library("libcrypto") {
+harmonyos_shared_library("libcrypto") {
   deps = [
     ":crypto_source"
   ]
@@ -660,7 +660,7 @@ zidane_shared_library("libcrypto") {
 }
 
 
-zidane_shared_library("libcrypto_commu") {
+harmonyos_shared_library("libcrypto_commu") {
   include_dirs = [
     "./",
     "./crypto/include",
@@ -1351,7 +1351,7 @@ config("ssl_config") {
   ]
 }
 
-zidane_source_set("ssl_source") {
+harmonyos_source_set("ssl_source") {
   sources = [
     "ssl/bio_ssl.c",
     "ssl/d1_lib.c",
@@ -1409,7 +1409,7 @@ zidane_source_set("ssl_source") {
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
-zidane_static_library("libssl_static") {
+harmonyos_static_library("libssl_static") {
   deps = [
     ":ssl_source",
   ]
@@ -1417,7 +1417,7 @@ zidane_static_library("libssl_static") {
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
-zidane_shared_library("libssl") {
+harmonyos_shared_library("libssl") {
   deps = [
     ":ssl_source",
   ]
