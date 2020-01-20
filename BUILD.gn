@@ -643,6 +643,13 @@ harmonyos_source_set("crypto_source") {
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
+harmonyos_static_library("libcrypto_static") {
+  deps = [
+    ":crypto_source"
+  ]
+  complete_static_lib = true
+  remove_configs = ["//build/config/coverage:default_coverage"]
+}
 
 
 config("ssl_config") {
