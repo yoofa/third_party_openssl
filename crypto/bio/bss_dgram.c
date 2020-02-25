@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2018 The OpenSSL Project Authors. All Rights Reserved.
+ * Copyright 2005-2019 The OpenSSL Project Authors. All Rights Reserved.
  *
  * Licensed under the OpenSSL license (the "License").  You may not use
  * this file except in compliance with the License.  You can obtain a copy
@@ -51,8 +51,6 @@ static int dgram_sctp_write(BIO *h, const char *buf, int num);
 static int dgram_sctp_read(BIO *h, char *buf, int size);
 static int dgram_sctp_puts(BIO *h, const char *str);
 static long dgram_sctp_ctrl(BIO *h, int cmd, long arg1, void *arg2);
-static int dgram_sctp_wait_for_dry(BIO *b);
-static int dgram_sctp_msg_waiting(BIO *b);
 static int dgram_sctp_new(BIO *h);
 static int dgram_sctp_free(BIO *data);
 #  ifdef SCTP_AUTHENTICATION_EVENT
@@ -786,7 +784,7 @@ static long dgram_ctrl(BIO *b, int cmd, long num, void *ptr)
      * reasons. When BIO_CTRL_DGRAM_SET_PEEK_MODE was first defined its value
      * was incorrectly clashing with BIO_CTRL_DGRAM_SCTP_SET_IN_HANDSHAKE. The
      * value has been updated to a non-clashing value. However to preserve
-     * binary compatiblity we now respond to both the old value and the new one
+     * binary compatibility we now respond to both the old value and the new one
      */
     case BIO_CTRL_DGRAM_SCTP_SET_IN_HANDSHAKE:
     case BIO_CTRL_DGRAM_SET_PEEK_MODE:
@@ -1565,10 +1563,6 @@ static long dgram_sctp_ctrl(BIO *b, int cmd, long num, void *ptr)
             data->save_shutdown = 0;
         break;
 
-    case BIO_CTRL_DGRAM_SCTP_WAIT_FOR_DRY:
-        return dgram_sctp_wait_for_dry(b);
-    case BIO_CTRL_DGRAM_SCTP_MSG_WAITING:
-        return dgram_sctp_msg_waiting(b);
     default:
         /*
          * Pass to default ctrl function to process SCTP unspecific commands
@@ -1611,17 +1605,6 @@ int BIO_dgram_sctp_notification_cb(BIO *b,
  *  1 when dry
  */
 int BIO_dgram_sctp_wait_for_dry(BIO *b)
-{
-    return (int)BIO_ctrl(b, BIO_CTRL_DGRAM_SCTP_WAIT_FOR_DRY, 0, NULL);
-}
-
-int BIO_dgram_sctp_msg_waiting(BIO *b)
-{
-    return (int)BIO_ctrl(b, BIO_CTRL_DGRAM_SCTP_MSG_WAITING, 0, NULL);
-}
-
-
-static int dgram_sctp_wait_for_dry(BIO *b)
 {
     int is_dry = 0;
     int sockflags = 0;
@@ -1779,7 +1762,7 @@ static int dgram_sctp_wait_for_dry(BIO *b)
     return is_dry;
 }
 
-static int dgram_sctp_msg_waiting(BIO *b)
+int BIO_dgram_sctp_msg_waiting(BIO *b)
 {
     int n, sockflags;
     union sctp_notification snp;
