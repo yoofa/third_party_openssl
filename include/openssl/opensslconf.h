@@ -202,11 +202,19 @@ extern "C" {
  * The following are cipher-specific, but are part of the public API.
  */
 #if !defined(OPENSSL_SYS_UEFI)
+#if defined(CPU_ARM32)
+# define BN_LLONG
+/* Only one for the following should be defined */
+# undef SIXTY_FOUR_BIT_LONG
+# undef SIXTY_FOUR_BIT
+# define THIRTY_TWO_BIT
+#else
 # undef BN_LLONG
 /* Only one for the following should be defined */
 # define SIXTY_FOUR_BIT_LONG
 # undef SIXTY_FOUR_BIT
 # undef THIRTY_TWO_BIT
+#endif
 #endif
 
 #define RC4_INT unsigned char

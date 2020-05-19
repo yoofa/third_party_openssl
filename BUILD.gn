@@ -30,6 +30,16 @@ config("crypto_config") {
   ]
 }
 
+config("crypto_config_public") {
+  include_dirs = [
+    "./include",
+  ]
+
+  if (target_cpu == "arm") {
+    cflags = ["-DCPU_ARM32"]
+  }
+}
+
 harmonyos_source_set("crypto_source") {
   sources = [
     "crypto/aes/aes_cbc.c",
@@ -639,13 +649,18 @@ harmonyos_source_set("crypto_source") {
 
   configs = [
     ":crypto_config",
+    ":crypto_config_public",
   ]
+
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
 harmonyos_static_library("libcrypto_static") {
   deps = [
     ":crypto_source"
+  ]
+  public_configs = [
+    ":crypto_config_public",
   ]
   complete_static_lib = true
   remove_configs = ["//build/config/coverage:default_coverage"]
