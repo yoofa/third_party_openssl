@@ -3,6 +3,8 @@
 # Description: This script is used to generate .S files.
 # Create: 2020-05-30
 
+set -e
+
 error()
 {
     echo ===========================================
@@ -18,8 +20,6 @@ success()
     echo ===========================================
     exit 0
 }
-
-set -e
 
 rm -rf crypto/aes/asm/arm32
 rm -rf crypto/modes/asm/arm32
