@@ -1,5 +1,5 @@
 #! /usr/bin/env perl
-# Copyright 2013-2016 The OpenSSL Project Authors. All Rights Reserved.
+# Copyright 2013-2020 The OpenSSL Project Authors. All Rights Reserved.
 # Copyright (c) 2012, Intel Corporation. All Rights Reserved.
 #
 # Licensed under the OpenSSL license (the "License").  You may not use
@@ -81,7 +81,7 @@ if (!$addx && $win64 && ($flavour =~ /masm/ || $ENV{ASM} =~ /ml64/) &&
 	$addx = ($1>=12);
 }
 
-if (!$addx && `$ENV{CC} -v 2>&1` =~ /((?:^clang|LLVM) version|.*based on LLVM) ([3-9])\.([0-9]+)/) {
+if (!$addx && `$ENV{CC} -v 2>&1` =~ /((?:^clang|LLVM) version|.*based on LLVM) ([0-9]+)\.([0-9]+)/) {
 	my $ver = $2 + $3/100.0;	# 3.1->3.01, 3.10->3.10
 	$addx = ($ver>=3.03);
 }
@@ -242,9 +242,9 @@ $code.=<<___;
 	adcq	\$0, %rbx
 
 	mulq	%rax
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	addq	%rcx, %rax
 	 movq	16($inp), %rbp
-	adcq	\$0, %rdx
 	addq	%rax, %r9
 	 movq	24($inp), %rax
 	adcq	%rdx, %r10
@@ -298,9 +298,9 @@ $code.=<<___;
 	adcq	\$0, %rcx
 
 	mulq	%rax
+	# rbx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	addq	%rbx, %rax
 	 movq	24($inp), %r10
-	adcq	\$0, %rdx
 	addq	%rax, %r11
 	 movq	32($inp), %rax
 	adcq	%rdx, %r12
@@ -349,8 +349,8 @@ $code.=<<___;
 	adcq	\$0, %rbx
 
 	mulq	%rax
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	addq	%rcx, %rax
-	adcq	\$0, %rdx
 	addq	%rax, %r13
 	 movq	%r12, %rax		# 40($inp)
 	adcq	%rdx, %r14
@@ -389,8 +389,8 @@ $code.=<<___;
 	adcq	\$0, %rcx
 
 	mulq	%rax
+	# rbx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	addq	%rbx, %rax
-	adcq	\$0, %rdx
 	addq	%rax, %r15
 	 movq	%rbp, %rax		# 48($inp)
 	adcq	%rdx, %r8
@@ -420,8 +420,8 @@ $code.=<<___;
 	adcq	\$0, %rbx
 
 	mulq	%rax
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	addq	%rcx, %rax
-	adcq	\$0, %rdx
 	addq	%rax, %r9
 	 movq	%r14, %rax		# 56($inp)
 	adcq	%rdx, %r10
@@ -443,8 +443,8 @@ $code.=<<___;
 	adcq	\$0, %rcx
 
 	mulq	%rax
+	# rbx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	addq	%rbx, %rax
-	adcq	\$0, %rdx
 	addq	%rax, %r11
 	 movq	%r14, %rax		# 56($inp)
 	adcq	%rdx, %r12
@@ -459,8 +459,8 @@ $code.=<<___;
 	adcq	\$0, %rbx
 
 	mulq	%rax
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	addq	%rcx, %rax
-	adcq	\$0, %rdx
 	addq	%r13, %rax
 	adcq	%rbx, %rdx
 
@@ -572,9 +572,9 @@ $code.=<<___;
 	 .byte	0x48,0x8b,0x96,0x10,0x00,0x00,0x00		# mov	16($inp), %rdx
 
 	xor	%rbx, %rbx
+	 adox	%r9, %r9
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	adcx	%rcx, %rax
-	adox	%r9, %r9
-	adcx	%rbp, $out
 	adox	%r10, %r10
 	adcx	%rax, %r9
 	adox	%rbp, %rbx
@@ -609,9 +609,9 @@ $code.=<<___;
 	 mov	24($inp), %rdx
 
 	xor	%rcx, %rcx
+	 adox	%r11, %r11
+	# rbx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	adcx	%rbx, %rax
-	adox	%r11, %r11
-	adcx	%rbp, $out
 	adox	%r12, %r12
 	adcx	%rax, %r11
 	adox	%rbp, %rcx
@@ -642,9 +642,9 @@ $code.=<<___;
 	 mov	32($inp), %rdx
 
 	xor	%rbx, %rbx
+	 adox	%r13, %r13
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	adcx	%rcx, %rax
-	adox	%r13, %r13
-	adcx	%rbp, $out
 	adox	%r14, %r14
 	adcx	%rax, %r13
 	adox	%rbp, %rbx
@@ -671,9 +671,9 @@ $code.=<<___;
 	adox	%rbp, %r11
 
 	xor	%rcx, %rcx
+	 adox	%r15, %r15
+	# rbx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	adcx	%rbx, %rax
-	adox	%r15, %r15
-	adcx	%rbp, $out
 	adox	%r8, %r8
 	adcx	%rax, %r15
 	adox	%rbp, %rcx
@@ -696,9 +696,9 @@ $code.=<<___;
 	 mov	48($inp), %rdx
 
 	xor	%rbx, %rbx
+	 adox	%r9, %r9
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	adcx	%rcx, %rax
-	adox	%r9, %r9
-	adcx	%rbp, $out
 	adox	%r10, %r10
 	adcx	%rax, %r9
 	adcx	$out, %r10
@@ -716,9 +716,9 @@ $code.=<<___;
 	mulx	%rdx, %rax, $out
 	xor	%rcx, %rcx
 	 mov	56($inp), %rdx
+	 adox	%r11, %r11
+	# rbx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	adcx	%rbx, %rax
-	adox	%r11, %r11
-	adcx	%rbp, $out
 	adox	%r12, %r12
 	adcx	%rax, %r11
 	adox	%rbp, %rcx
@@ -731,9 +731,9 @@ $code.=<<___;
 #eighth iteration
 	mulx	%rdx, %rax, %rdx
 	xor	%rbx, %rbx
+	 adox	%r13, %r13
+	# rcx <= 2 and rax <= 0xFFFF..F9, so carry must be zero here
 	adcx	%rcx, %rax
-	adox	%r13, %r13
-	adcx	%rbp, %rdx
 	adox	%rbp, %rbx
 	adcx	%r13, %rax
 	adcx	%rdx, %rbx
@@ -1619,6 +1619,7 @@ $code.=<<___;
 .type	__rsaz_512_reduce,\@abi-omnipotent
 .align	32
 __rsaz_512_reduce:
+.cfi_startproc
 	movq	%r8, %rbx
 	imulq	128+8(%rsp), %rbx
 	movq	0(%rbp), %rax
@@ -1698,6 +1699,7 @@ __rsaz_512_reduce:
 	jne	.Lreduction_loop
 
 	ret
+.cfi_endproc
 .size	__rsaz_512_reduce,.-__rsaz_512_reduce
 ___
 }
@@ -1711,6 +1713,7 @@ $code.=<<___;
 .type	__rsaz_512_reducex,\@abi-omnipotent
 .align	32
 __rsaz_512_reducex:
+.cfi_startproc
 	#movq	128+8(%rsp), %rdx		# pull $n0
 	imulq	%r8, %rdx
 	xorq	%rsi, %rsi			# cf=0,of=0
@@ -1763,6 +1766,7 @@ __rsaz_512_reducex:
 	jne	.Lreduction_loopx
 
 	ret
+.cfi_endproc
 .size	__rsaz_512_reducex,.-__rsaz_512_reducex
 ___
 }
@@ -1774,6 +1778,7 @@ $code.=<<___;
 .type	__rsaz_512_subtract,\@abi-omnipotent
 .align	32
 __rsaz_512_subtract:
+.cfi_startproc
 	movq	%r8, ($out)
 	movq	%r9, 8($out)
 	movq	%r10, 16($out)
@@ -1827,6 +1832,7 @@ __rsaz_512_subtract:
 	movq	%r15, 56($out)
 
 	ret
+.cfi_endproc
 .size	__rsaz_512_subtract,.-__rsaz_512_subtract
 ___
 }
@@ -1840,6 +1846,7 @@ $code.=<<___;
 .type	__rsaz_512_mul,\@abi-omnipotent
 .align	32
 __rsaz_512_mul:
+.cfi_startproc
 	leaq	8(%rsp), %rdi
 
 	movq	($ap), %rax
@@ -1978,6 +1985,7 @@ __rsaz_512_mul:
 	movq	%r15, 56(%rdi)
 
 	ret
+.cfi_endproc
 .size	__rsaz_512_mul,.-__rsaz_512_mul
 ___
 }
@@ -1992,6 +2000,7 @@ $code.=<<___;
 .type	__rsaz_512_mulx,\@abi-omnipotent
 .align	32
 __rsaz_512_mulx:
+.cfi_startproc
 	mulx	($ap), %rbx, %r8	# initial %rdx preloaded by caller
 	mov	\$-6, %rcx
 
@@ -2108,6 +2117,7 @@ __rsaz_512_mulx:
 	mov	%r15, 8+64+56(%rsp)
 
 	ret
+.cfi_endproc
 .size	__rsaz_512_mulx,.-__rsaz_512_mulx
 ___
 }
@@ -2118,6 +2128,7 @@ $code.=<<___;
 .type	rsaz_512_scatter4,\@abi-omnipotent
 .align	16
 rsaz_512_scatter4:
+.cfi_startproc
 	leaq	($out,$power,8), $out
 	movl	\$8, %r9d
 	jmp	.Loop_scatter
@@ -2130,12 +2141,14 @@ rsaz_512_scatter4:
 	decl	%r9d
 	jnz	.Loop_scatter
 	ret
+.cfi_endproc
 .size	rsaz_512_scatter4,.-rsaz_512_scatter4
 
 .globl	rsaz_512_gather4
 .type	rsaz_512_gather4,\@abi-omnipotent
 .align	16
 rsaz_512_gather4:
+.cfi_startproc
 ___
 $code.=<<___	if ($win64);
 .LSEH_begin_rsaz_512_gather4:
@@ -2230,6 +2243,7 @@ ___
 $code.=<<___;
 	ret
 .LSEH_end_rsaz_512_gather4:
+.cfi_endproc
 .size	rsaz_512_gather4,.-rsaz_512_gather4
 
 .align	64
@@ -2414,4 +2428,4 @@ ___
 
 $code =~ s/\`([^\`]*)\`/eval $1/gem;
 print $code;
-close STDOUT;
+close STDOUT or die "error closing STDOUT: $!";

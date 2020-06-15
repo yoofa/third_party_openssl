@@ -1,4 +1,4 @@
-// Copyright 2011-2016 The OpenSSL Project Authors. All Rights Reserved.
+// Copyright 2011-2020 The OpenSSL Project Authors. All Rights Reserved.
 //
 // Licensed under the OpenSSL license (the "License").  You may not use
 // this file except in compliance with the License.  You can obtain a copy
@@ -16,7 +16,7 @@
 // May 2011
 //
 // The module implements bn_GF2m_mul_2x2 polynomial multiplication
-// used in bn_gf2m.c. It is kind of low-hanging mechanical port from
+// used in bn_gf2m.c. It's kind of low-hanging mechanical port from
 // C for the time being... Except that it has two code paths: pure
 // integer code suitable for any ARMv4 and later CPU and NEON code
 // suitable for ARMv7. Pure integer 1x1 multiplication subroutine runs

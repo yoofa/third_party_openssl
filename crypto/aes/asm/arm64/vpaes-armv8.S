@@ -1,4 +1,4 @@
-// Copyright 2015-2019 The OpenSSL Project Authors. All Rights Reserved.
+// Copyright 2015-2020 The OpenSSL Project Authors. All Rights Reserved.
 //
 // Licensed under the OpenSSL license (the "License").  You may not use
 // this file except in compliance with the License.  You can obtain a copy
@@ -6,7 +6,7 @@
 // https://www.openssl.org/source/license.html
 
 
-// ====================================================================
+//=====================================================================
 // Constant-time SSSE3 AES core implementation.
 // version 0.1
 //
@@ -16,11 +16,11 @@
 // For details see http://shiftleft.org/papers/vector_aes/ and
 // http://crypto.stanford.edu/vpaes/.
 //
-// ====================================================================
+//=====================================================================
 // ARMv8 NEON adaptation by <appro@openssl.org>
 //
 // Reason for undertaken effort is that there is at least one popular
-// SoC based on Cortex-A53 that does not have crypto extensions.
+// SoC based on Cortex-A53 that doesn't have crypto extensions.
 //
 //                   CBC enc     ECB enc/dec(*)   [bit-sliced enc/dec]
 // Cortex-A53        21.5        18.1/20.6        [17.5/19.8         ]
@@ -33,7 +33,7 @@
 // (*)	ECB denotes approximate result for parallelizable modes
 //	such as CBC decrypt, CTR, etc.;
 // (**)	these results are worse than scalar compiler-generated
-//	code, but it is constant-time and therefore preferred;
+//	code, but it's constant-time and therefore preferred;
 // (***)	presented for reference/comparison purposes;
 
 .text

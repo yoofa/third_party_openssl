@@ -1,4 +1,4 @@
-// Copyright 2017-2019 The OpenSSL Project Authors. All Rights Reserved.
+// Copyright 2017-2020 The OpenSSL Project Authors. All Rights Reserved.
 //
 // Licensed under the OpenSSL license (the "License").  You may not use
 // this file except in compliance with the License.  You can obtain a copy
@@ -38,7 +38,7 @@
 // hash] as long as vector instructions issue rate is limited to 1 per
 // cycle...
 //
-// ======================================================================
+//==============================================================================
 // Numbers are cycles per processed byte.
 //
 //		r=1088(*)
@@ -56,7 +56,6 @@
 //	compiler does much better and improvement varies from 5% on
 //	Cortex-A57 to 25% on Cortex-A53. While in comparison to older
 //	compiler this code is at least 2x faster...
-
 
 .text
 

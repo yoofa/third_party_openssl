@@ -1,4 +1,4 @@
-// Copyright 2016-2019 The OpenSSL Project Authors. All Rights Reserved.
+// Copyright 2016-2020 The OpenSSL Project Authors. All Rights Reserved.
 //
 // Licensed under the OpenSSL license (the "License").  You may not use
 // this file except in compliance with the License.  You can obtain a copy
@@ -32,7 +32,6 @@
 // (*)	estimate based on resources availability is less than 1.0,
 //	i.e. measured result is worse than expected, presumably binary
 //	translator is not almighty;
-
 
 #include "arm_arch.h"
 

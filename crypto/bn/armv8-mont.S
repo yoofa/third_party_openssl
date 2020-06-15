@@ -1,4 +1,4 @@
-// Copyright 2015-2019 The OpenSSL Project Authors. All Rights Reserved.
+// Copyright 2015-2020 The OpenSSL Project Authors. All Rights Reserved.
 //
 // Licensed under the OpenSSL license (the "License").  You may not use
 // this file except in compliance with the License.  You can obtain a copy
@@ -22,11 +22,11 @@
 // instruction issue rate is limited on processor in question, meaning
 // that dedicated squaring procedure is a must. Well, actually all
 // contemporary AArch64 processors seem to have limited multiplication
-// issue rate, i.e. they can not issue multiplication every cycle, which
+// issue rate, i.e. they can't issue multiplication every cycle, which
 // explains moderate improvement coefficients in comparison to
 // compiler-generated code. Recall that compiler is instructed to use
 // umulh and therefore uses same amount of multiplication instructions
-// to do the job. Assembly edge is to minimize number of "collateral"
+// to do the job. Assembly's edge is to minimize number of "collateral"
 // instructions and of course instruction scheduling.
 //
 // April 2015

@@ -4,7 +4,6 @@ config("crypto_config") {
   include_dirs = [
     "./",
     "./crypto",
-    "./crypto/include",
     "./include",
     "./crypto/modes",
     "./crypto/ec/curve448",

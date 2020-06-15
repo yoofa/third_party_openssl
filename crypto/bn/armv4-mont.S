@@ -1,4 +1,4 @@
-// Copyright 2007-2018 The OpenSSL Project Authors. All Rights Reserved.
+// Copyright 2007-2020 The OpenSSL Project Authors. All Rights Reserved.
 //
 // Licensed under the OpenSSL license (the "License").  You may not use
 // this file except in compliance with the License.  You can obtain a copy
@@ -22,11 +22,11 @@
 // [depending on key length, less for longer keys] on ARM920T, and
 // +115-80% on Intel IXP425. This is compared to pre-bn_mul_mont code
 // base and compiler generated code with in-lined umull and even umlal
-// instructions. The latter means that this code did not really have an
+// instructions. The latter means that this code didn't really have an
 // "advantage" of utilizing some "secret" instruction.
 //
 // The code is interoperable with Thumb ISA and is rather compact, less
-// than 1/2KB. Windows CE port would be trivial, as it is exclusively
+// than 1/2KB. Windows CE port would be trivial, as it's exclusively
 // about decorations, ABI and instruction syntax are identical.
 
 // November 2013
@@ -38,7 +38,7 @@
 // incredible ~380%, yes, 4.8x faster, for RSA4096 sign. But this is
 // rather because original integer-only code seems to perform
 // suboptimally on S4. Situation on Cortex-A9 is unfortunately
-// different. It is being looked into, but the trouble is that
+// different. It's being looked into, but the trouble is that
 // performance for vectors longer than 256 bits is actually couple
 // of percent worse than for integer-only code. The code is chosen
 // for execution on all NEON-capable processors, because gain on
