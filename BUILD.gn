@@ -1,6 +1,6 @@
 # Copyright (C) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 
-import("//build/harmonyos.gni")
+import("//build/ohos.gni")
 
 config("crypto_config") {
   include_dirs = [
@@ -77,7 +77,7 @@ config("crypto_config_public") {
   }
 }
 
-harmonyos_source_set("crypto_source") {
+ohos_source_set("crypto_source") {
   sources = [
     "crypto/aes/aes_cbc.c",
     "crypto/aes/aes_cfb.c",
@@ -735,7 +735,7 @@ harmonyos_source_set("crypto_source") {
   remove_configs = ["//build/config/coverage:default_coverage"]
 }
 
-harmonyos_static_library("libcrypto_static") {
+ohos_static_library("libcrypto_static") {
   deps = [
     ":crypto_source"
   ]
@@ -779,7 +779,7 @@ config("ssl_config") {
   ]
 }
 
-harmonyos_source_set("ssl_source") {
+ohos_source_set("ssl_source") {
   sources = [
     "ssl/bio_ssl.c",
     "ssl/d1_lib.c",
