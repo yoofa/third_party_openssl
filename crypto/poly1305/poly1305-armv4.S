@@ -1,32 +1,3 @@
-// Copyright 2016-2020 The OpenSSL Project Authors. All Rights Reserved.
-//
-// Licensed under the OpenSSL license (the "License").  You may not use
-// this file except in compliance with the License.  You can obtain a copy
-// in the file LICENSE in the source distribution or at
-// https://www.openssl.org/source/license.html
-
-//
-// ====================================================================
-// Written by Andy Polyakov <appro@openssl.org> for the OpenSSL
-// project. The module is, however, dual licensed under OpenSSL and
-// CRYPTOGAMS licenses depending on where you obtain it. For further
-// details see http://www.openssl.org/~appro/cryptogams/.
-// ====================================================================
-//
-//			IALU(*)/gcc-4.4		NEON
-//
-// ARM11xx(ARMv6)	7.78/+100%		-
-// Cortex-A5		6.35/+130%		3.00
-// Cortex-A8		6.25/+115%		2.36
-// Cortex-A9		5.10/+95%		2.55
-// Cortex-A15		3.85/+85%		1.25(**)
-// Snapdragon S4		5.70/+100%		1.48(**)
-//
-// (*)	this is for -march=armv6, i.e. with bunch of ldrb loading data;
-// (**)	these are trade-off results, they can be improved by ~8% but at
-//	the cost of 15/12% regression on Cortex-A5/A7, it's even possible
-//	to improve Cortex-A9 result, but then A5/A7 loose more than 20%;
-
 #include "arm_arch.h"
 
 .text
@@ -114,10 +85,10 @@ poly1305_init:
 #  ifdef __thumb2__
 	itete	eq
 #  endif
-	addeq	r12,r11,#(poly1305_emit-.Lpoly1305_init)
-	addne	r12,r11,#(poly1305_emit_neon-.Lpoly1305_init)
-	addeq	r11,r11,#(poly1305_blocks-.Lpoly1305_init)
-	addne	r11,r11,#(poly1305_blocks_neon-.Lpoly1305_init)
+	addeq	r12,r11,#(.Lpoly1305_emit-.Lpoly1305_init)
+	addne	r12,r11,#(.Lpoly1305_emit_neon-.Lpoly1305_init)
+	addeq	r11,r11,#(.Lpoly1305_blocks-.Lpoly1305_init)
+	addne	r11,r11,#(.Lpoly1305_blocks_neon-.Lpoly1305_init)
 # endif
 # ifdef	__thumb2__
 	orr	r12,r12,#1	@ thumb-ify address
@@ -319,6 +290,7 @@ poly1305_blocks:
 .type	poly1305_emit,%function
 .align	5
 poly1305_emit:
+.Lpoly1305_emit:
 	stmdb	sp!,{r4-r11}
 .Lpoly1305_emit_enter:
 
@@ -629,6 +601,7 @@ poly1305_init_neon:
 .type	poly1305_blocks_neon,%function
 .align	5
 poly1305_blocks_neon:
+.Lpoly1305_blocks_neon:
 	ldr	ip,[r0,#36]		@ is_base2_26
 	ands	r2,r2,#-16
 	beq	.Lno_data_neon
@@ -1115,6 +1088,7 @@ poly1305_blocks_neon:
 .type	poly1305_emit_neon,%function
 .align	5
 poly1305_emit_neon:
+.Lpoly1305_emit_neon:
 	ldr	ip,[r0,#36]		@ is_base2_26
 
 	stmdb	sp!,{r4-r11}

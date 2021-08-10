@@ -9,8 +9,7 @@
  * https://www.openssl.org/source/license.html
  */
 
-#if !defined(WINDOWS_PLATFORM) && !defined(MAC_PLATFORM)
-
+#ifdef OPENSSL_ARM64_PLATFORM
 #ifndef OSSL_CRYPTO_BN_CONF_H
 # define OSSL_CRYPTO_BN_CONF_H
 
@@ -23,20 +22,34 @@
 /* Should we define BN_DIV2W here? */
 
 /* Only one for the following should be defined */
-#if defined(CPU_ARM32)
-#undef SIXTY_FOUR_BIT_LONG
-#undef SIXTY_FOUR_BIT
-#define THIRTY_TWO_BIT
-#else
 #define SIXTY_FOUR_BIT_LONG
 #undef SIXTY_FOUR_BIT
 #undef THIRTY_TWO_BIT
-#endif
-#endif
 
-// defines for windows
-#elif defined(WINDOWS_PLATFORM)
+#endif
+#endif // OPENSSL_ARM64_PLATFORM
 
+#ifdef OPENSSL_ARM_PLATFORM
+#ifndef OSSL_CRYPTO_BN_CONF_H
+# define OSSL_CRYPTO_BN_CONF_H
+
+/*
+ * The contents of this file are not used in the UEFI build, as
+ * both 32-bit and 64-bit builds are supported from a single run
+ * of the Configure script.
+ */
+
+/* Should we define BN_DIV2W here? */
+
+/* Only one for the following should be defined */
+#undef SIXTY_FOUR_BIT_LONG
+#undef SIXTY_FOUR_BIT
+#define THIRTY_TWO_BIT
+
+#endif
+#endif // OPENSSL_ARM_PLATFORM
+
+#ifdef WINDOWS_PLATFORM
 #ifndef OSSL_CRYPTO_BN_CONF_H
 # define OSSL_CRYPTO_BN_CONF_H
 
@@ -54,10 +67,9 @@
 #undef THIRTY_TWO_BIT
 
 #endif
+#endif // WINDOWS_PLATFORM
 
-// defines for mac
-#elif defined(MAC_PLATFORM)
-
+#ifdef MAC_PLATFORM
 #ifndef OSSL_CRYPTO_BN_CONF_H
 # define OSSL_CRYPTO_BN_CONF_H
 
@@ -75,5 +87,4 @@
 #undef THIRTY_TWO_BIT
 
 #endif
-
-#endif
+#endif // MAC_PLATFORM
