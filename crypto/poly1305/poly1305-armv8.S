@@ -1,48 +1,17 @@
-// Copyright 2016-2020 The OpenSSL Project Authors. All Rights Reserved.
-//
-// Licensed under the OpenSSL license (the "License").  You may not use
-// this file except in compliance with the License.  You can obtain a copy
-// in the file LICENSE in the source distribution or at
-// https://www.openssl.org/source/license.html
-
-//
-// ====================================================================
-// Written by Andy Polyakov <appro@openssl.org> for the OpenSSL
-// project. The module is, however, dual licensed under OpenSSL and
-// CRYPTOGAMS licenses depending on where you obtain it. For further
-// details see http://www.openssl.org/~appro/cryptogams/.
-// ====================================================================
-//
-// This module implements Poly1305 hash for ARMv8.
-//
-// June 2015
-//
-// Numbers are cycles per processed byte with poly1305_blocks alone.
-//
-//		IALU/gcc-4.9	NEON
-//
-// Apple A7	1.86/+5%	0.72
-// Cortex-A53	2.69/+58%	1.47
-// Cortex-A57	2.70/+7%	1.14
-// Denver	1.64/+50%	1.18(*)
-// X-Gene	2.13/+68%	2.27
-// Mongoose	1.77/+75%	1.12
-// Kryo		2.70/+55%	1.13
-//
-// (*)	estimate based on resources availability is less than 1.0,
-//	i.e. measured result is worse than expected, presumably binary
-//	translator is not almighty;
-
 #include "arm_arch.h"
 
 .text
 
 // forward "declarations" are required for Apple
 
-.globl	poly1305_blocks
-.globl	poly1305_emit
-
+.hidden	OPENSSL_armcap_P
 .globl	poly1305_init
+.hidden	poly1305_init
+.globl	poly1305_blocks
+.hidden	poly1305_blocks
+.globl	poly1305_emit
+.hidden	poly1305_emit
+
 .type	poly1305_init,%function
 .align	5
 poly1305_init:
@@ -830,8 +799,8 @@ poly1305_blocks_neon:
 	st1	{v23.s}[0],[x0]
 
 .Lno_data_neon:
-.inst	0xd50323bf		// autiasp
 	ldr	x29,[sp],#80
+.inst	0xd50323bf		// autiasp
 	ret
 .size	poly1305_blocks_neon,.-poly1305_blocks_neon
 

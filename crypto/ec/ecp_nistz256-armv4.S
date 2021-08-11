@@ -1,37 +1,3 @@
-// Copyright 2015-2020 The OpenSSL Project Authors. All Rights Reserved.
-//
-// Licensed under the OpenSSL license (the "License").  You may not use
-// this file except in compliance with the License.  You can obtain a copy
-// in the file LICENSE in the source distribution or at
-// https://www.openssl.org/source/license.html
-
-
-// ====================================================================
-// Written by Andy Polyakov <appro@openssl.org> for the OpenSSL
-// project. The module is, however, dual licensed under OpenSSL and
-// CRYPTOGAMS licenses depending on where you obtain it. For further
-// details see http://www.openssl.org/~appro/cryptogams/.
-// ====================================================================
-//
-// ECP_NISTZ256 module for ARMv4.
-//
-// October 2014.
-//
-// Original ECP_NISTZ256 submission targeting x86_64 is detailed in
-// http://eprint.iacr.org/2013/816. In the process of adaptation
-// original .c module was made 32-bit savvy in order to make this
-// implementation possible.
-//
-//			with/without -DECP_NISTZ256_ASM
-// Cortex-A8		+53-170%
-// Cortex-A9		+76-205%
-// Cortex-A15		+100-316%
-// Snapdragon S4		+66-187%
-//
-// Ranges denote minimum and maximum improvement coefficients depending
-// on benchmark. Lower coefficients are for ECDSA sign, server-side
-// operation. Keep in mind that +200% means 3x improvement.
-
 #include "arm_arch.h"
 
 .text
@@ -3883,9 +3849,9 @@ ecp_nistz256_point_add:
 	ldr	r14,[sp,#32*18+12]	@ ~is_equal(S1,S2)
 	mvn	r10,r10			@ -1/0 -> 0/-1
 	mvn	r12,r12			@ -1/0 -> 0/-1
-	orr	r11,r10
-	orr	r11,r12
-	orrs	r11,r14			@ set flags
+	orr	r11,r11,r10
+	orr	r11,r11,r12
+	orrs	r11,r11,r14		@ set flags
 
 	@ if(~is_equal(U1,U2) | in1infty | in2infty | ~is_equal(S1,S2))
 	bne	.Ladd_proceed
