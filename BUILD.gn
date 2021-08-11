@@ -4,7 +4,6 @@ import("//build/ohos.gni")
 
 # Only use this to set/unset some cflags, use "platform" variable in gn template to add
 # source code for Windows.
-use_mingw_win = "${current_os}_${current_cpu}" == "mingw_x86_64"
 
 config("crypto_config") {
   include_dirs = [
@@ -37,7 +36,7 @@ config("crypto_config") {
     "-DOPENSSL_NO_RIPEMD",
     "-DOPENSSL_NO_RMD160",
   ]
-  if (target_cpu == "arm" && !use_mingw_win && host_os != "mac") {
+  if (current_cpu == "arm" && !(current_os == "linux" || host_os == "mac")) {
     cflags += [
       "-DOPENSSL_CPUID_OBJ",
       "-DOPENSSL_BN_ASM_MONT",
@@ -52,7 +51,8 @@ config("crypto_config") {
       "-DECP_NISTZ256_ASM",
       "-DPOLY1305_ASM",
     ]
-  } else if (target_cpu == "arm64" && !use_mingw_win && host_os != "mac") {
+  } else if (current_cpu == "arm64" &&
+             !(current_os == "linux" || host_os == "mac")) {
     cflags += [
       "-DOPENSSL_CPUID_OBJ",
       "-DOPENSSL_BN_ASM_MONT",
@@ -64,7 +64,7 @@ config("crypto_config") {
       "-DECP_NISTZ256_ASM",
       "-DPOLY1305_ASM",
     ]
-  } else if (use_mingw_win) {
+  } else if (is_mingw) {
     cflags -= [
       "-fPIC",
       "-DOPENSSL_NO_BF",
@@ -89,8 +89,7 @@ config("crypto_config") {
       "-Wno-sign-compare",
       "-Wno-incompatible-pointer-types",
     ]
-    defines = [ "WINDOWS_PLATFORM" ]
-  } else if (host_os == "mac") {
+  } else if (current_os == "linux" || host_os == "mac") {
     cflags -= [
       "-DOPENSSL_NO_BF",
       "-DOPENSSL_NO_CAMELLIA",
@@ -99,6 +98,9 @@ config("crypto_config") {
       "-DOPENSSL_NO_RC2",
       "-DOPENSSL_NO_RMD160",
     ]
+    if (current_os == "linux") {
+      cflags += [ "-m64" ]
+    }
     cflags += [
       "-DL_ENDIAN",
       "-D_REENTRAN",
@@ -106,7 +108,6 @@ config("crypto_config") {
       "-MF",
       "-c",
     ]
-    defines = [ "MAC_PLATFORM" ]
   } else {
     cflags += [ "-DOPENSSL_NO_ASM" ]
   }
@@ -115,8 +116,15 @@ config("crypto_config") {
 config("crypto_config_public") {
   include_dirs = [ "./include" ]
 
-  if (target_cpu == "arm") {
-    cflags = [ "-DCPU_ARM32" ]
+  if (current_cpu == "arm" && !(current_os == "linux" || host_os == "mac")) {
+    cflags = [ "-DOPENSSL_ARM_PLATFORM" ]
+  } else if (current_cpu == "arm64" &&
+             !(current_os == "linux" || host_os == "mac")) {
+    cflags = [ "-DOPENSSL_ARM64_PLATFORM" ]
+  } else if (is_mingw) {
+    cflags = [ "-DWINDOWS_PLATFORM" ]
+  } else if (current_os == "linux" || host_os == "mac") {
+    cflags = [ "-DMAC_PLATFORM" ]
   }
 }
 
@@ -723,7 +731,7 @@ ohos_source_set("crypto_source") {
     "crypto/x509v3/v3err.c",
   ]
 
-  if (target_cpu == "arm" && !use_mingw_win && host_os != "mac") {
+  if (current_cpu == "arm" && !(current_os == "linux" || host_os == "mac")) {
     sources += [
       "crypto/aes/asm/arm32/aes-armv4.S",
       "crypto/aes/asm/arm32/aesv8-armx.S",
@@ -743,7 +751,8 @@ ohos_source_set("crypto_source") {
       "crypto/sha/sha256-armv4.S",
       "crypto/sha/sha512-armv4.S",
     ]
-  } else if (target_cpu == "arm64" && !use_mingw_win && host_os != "mac") {
+  } else if (current_cpu == "arm64" &&
+             !(current_os == "linux" || host_os == "mac")) {
     sources += [
       "crypto/aes/aes_core.c",
       "crypto/aes/asm/arm64/aesv8-armx.S",
@@ -761,7 +770,7 @@ ohos_source_set("crypto_source") {
       "crypto/sha/sha256-armv8.S",
       "crypto/sha/sha512-armv8.S",
     ]
-  } else if (use_mingw_win || host_os == "mac") {
+  } else if (is_mingw || (current_os == "linux" || host_os == "mac")) {
     sources += [
       "crypto/aes/aes_core.c",
       "crypto/bf/bf_cfb64.c",
@@ -802,7 +811,7 @@ ohos_source_set("crypto_source") {
       "crypto/ripemd/rmd_one.c",
       "crypto/sha/keccak1600.c",
     ]
-    if (use_mingw_win) {
+    if (is_mingw) {
       sources -= [
         "crypto/idea/i_cbc.c",
         "crypto/idea/i_cfb64.c",
@@ -822,10 +831,9 @@ ohos_source_set("crypto_source") {
     ]
   }
 
-  configs = [
-    ":crypto_config",
-    ":crypto_config_public",
-  ]
+  configs = [ ":crypto_config" ]
+
+  public_configs = [ ":crypto_config_public" ]
 
   remove_configs = [ "//build/config/coverage:default_coverage" ]
 }
@@ -868,7 +876,11 @@ config("ssl_config") {
     "-DOPENSSL_NO_SSL3_METHOD",
   ]
 
-  if (use_mingw_win) {
+  if (current_cpu == "arm" && host_os != "mac") {
+    cflags += [ "-DOPENSSL_ARM_PLATFORM" ]
+  } else if (current_cpu == "arm64" && host_os != "mac") {
+    cflags += [ "-DOPENSSL_ARM64_PLATFORM" ]
+  } else if (is_mingw) {
     cflags -= [ "-fPIC" ]
     cflags += [
       "-m64",
@@ -947,6 +959,7 @@ ohos_source_set("ssl_source") {
     "ssl/tls_srp.c",
   ]
 
-  configs = [ ":ssl_config" ]
+  public_configs = [ ":ssl_config" ]
+
   remove_configs = [ "//build/config/coverage:default_coverage" ]
 }

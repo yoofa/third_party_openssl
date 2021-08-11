@@ -1,38 +1,3 @@
-// Copyright 2016-2020 The OpenSSL Project Authors. All Rights Reserved.
-//
-// Licensed under the OpenSSL license (the "License").  You may not use
-// this file except in compliance with the License.  You can obtain a copy
-// in the file LICENSE in the source distribution or at
-// https://www.openssl.org/source/license.html
-
-//
-// ====================================================================
-// Written by Andy Polyakov <appro@openssl.org> for the OpenSSL
-// project. The module is, however, dual licensed under OpenSSL and
-// CRYPTOGAMS licenses depending on where you obtain it. For further
-// details see http://www.openssl.org/~appro/cryptogams/.
-// ====================================================================
-//
-// December 2014
-//
-// ChaCha20 for ARMv4.
-//
-// Performance in cycles per byte out of large buffer.
-//
-//			IALU/gcc-4.4    1xNEON      3xNEON+1xIALU
-//
-// Cortex-A5		19.3(*)/+95%    21.8        14.1
-// Cortex-A8		10.5(*)/+160%   13.9        6.35
-// Cortex-A9		12.9(**)/+110%  14.3        6.50
-// Cortex-A15		11.0/+40%       16.0        5.00
-// Snapdragon S4		11.5/+125%      13.6        4.90
-//
-// (*)	most "favourable" result for aligned data on little-endian
-//	processor, result for misaligned data is 10-15% lower;
-// (**)	this result is a trade-off: it can be improved by 20%,
-//	but then Snapdragon S4 and Cortex-A8 results get
-//	20-25% worse;
-
 #include "arm_arch.h"
 
 .text

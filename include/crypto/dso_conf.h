@@ -9,32 +9,37 @@
  * https://www.openssl.org/source/license.html
  */
 
-#if !defined(WINDOWS_PLATFORM) && !defined(MAC_PLATFORM)
-
+#ifdef OPENSSL_ARM64_PLATFORM
 #ifndef OSSL_CRYPTO_DSO_CONF_H
 # define OSSL_CRYPTO_DSO_CONF_H
 # define DSO_DLFCN
 # define HAVE_DLFCN_H
 # define DSO_EXTENSION ".so"
 #endif
+#endif // OPENSSL_ARM64_PLATFORM
 
-// defines for windows
-#elif defined(WINDOWS_PLATFORM)
+#ifdef OPENSSL_ARM_PLATFORM
+#ifndef OSSL_CRYPTO_DSO_CONF_H
+# define OSSL_CRYPTO_DSO_CONF_H
+# define DSO_DLFCN
+# define HAVE_DLFCN_H
+# define DSO_EXTENSION ".so"
+#endif
+#endif // OPENSSL_ARM_PLATFORM
 
+#ifdef WINDOWS_PLATFORM
 #ifndef OSSL_CRYPTO_DSO_CONF_H
 # define OSSL_CRYPTO_DSO_CONF_H
 # define DSO_WIN32
 # define DSO_EXTENSION ".dll"
 #endif
+#endif // WINDOWS_PLATFORM
 
-// defines for mac
-#elif defined(MAC_PLATFORM)
-
+#ifdef MAC_PLATFORM
 #ifndef OSSL_CRYPTO_DSO_CONF_H
 # define OSSL_CRYPTO_DSO_CONF_H
 # define DSO_DLFCN
 # define HAVE_DLFCN_H
 # define DSO_EXTENSION ".dylib"
 #endif
-
-#endif
+#endif // MAC_PLATFORM

@@ -1,35 +1,3 @@
-// Copyright 2015-2020 The OpenSSL Project Authors. All Rights Reserved.
-//
-// Licensed under the OpenSSL license (the "License").  You may not use
-// this file except in compliance with the License.  You can obtain a copy
-// in the file LICENSE in the source distribution or at
-// https://www.openssl.org/source/license.html
-
-
-// ====================================================================
-// Written by Andy Polyakov <appro@openssl.org> for the OpenSSL
-// project. The module is, however, dual licensed under OpenSSL and
-// CRYPTOGAMS licenses depending on where you obtain it. For further
-// details see http://www.openssl.org/~appro/cryptogams/.
-// ====================================================================
-//
-// ECP_NISTZ256 module for ARMv8.
-//
-// February 2015.
-//
-// Original ECP_NISTZ256 submission targeting x86_64 is detailed in
-// http://eprint.iacr.org/2013/816.
-//
-//			with/without -DECP_NISTZ256_ASM
-// Apple A7		+190-360%
-// Cortex-A53		+190-400%
-// Cortex-A57		+190-350%
-// Denver		+230-400%
-//
-// Ranges denote minimum and maximum improvement coefficients depending
-// on benchmark. Lower coefficients are for ECDSA sign, server-side
-// operation. Keep in mind that +400% means 5x improvement.
-
 #include "arm_arch.h"
 
 .text
