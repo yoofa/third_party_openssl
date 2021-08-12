@@ -125,6 +125,8 @@ config("crypto_config_public") {
     cflags = [ "-DWINDOWS_PLATFORM" ]
   } else if (current_os == "linux" || host_os == "mac") {
     cflags = [ "-DMAC_PLATFORM" ]
+  } else {
+    cflags = [ "-DOPENSSL_ARM64_PLATFORM" ]
   }
 }
 
@@ -878,7 +880,8 @@ config("ssl_config") {
 
   if (current_cpu == "arm" && host_os != "mac") {
     cflags += [ "-DOPENSSL_ARM_PLATFORM" ]
-  } else if (current_cpu == "arm64" && host_os != "mac") {
+  } else if (current_cpu == "arm64" &&
+             !(current_os == "linux" || host_os == "mac")) {
     cflags += [ "-DOPENSSL_ARM64_PLATFORM" ]
   } else if (is_mingw) {
     cflags -= [ "-fPIC" ]
@@ -904,6 +907,8 @@ config("ssl_config") {
       "-c",
     ]
     defines = [ "MAC_PLATFORM" ]
+  } else {
+    cflags += [ "-DOPENSSL_ARM64_PLATFORM" ]
   }
 }
 
