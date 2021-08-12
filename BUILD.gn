@@ -51,8 +51,8 @@ config("crypto_config") {
       "-DECP_NISTZ256_ASM",
       "-DPOLY1305_ASM",
     ]
-  } else if (current_cpu == "arm64" &&
-             !(current_os == "linux" || host_os == "mac")) {
+  } else if ((current_cpu == "arm64" || current_cpu == "x86_64") &&
+             !(current_os == "linux" || host_os == "mac" || is_mingw)) {
     cflags += [
       "-DOPENSSL_CPUID_OBJ",
       "-DOPENSSL_BN_ASM_MONT",
@@ -118,8 +118,8 @@ config("crypto_config_public") {
 
   if (current_cpu == "arm" && !(current_os == "linux" || host_os == "mac")) {
     cflags = [ "-DOPENSSL_ARM_PLATFORM" ]
-  } else if (current_cpu == "arm64" &&
-             !(current_os == "linux" || host_os == "mac")) {
+  } else if ((current_cpu == "arm64" || current_cpu == "x86_64") &&
+             !(current_os == "linux" || host_os == "mac" || is_mingw)) {
     cflags = [ "-DOPENSSL_ARM64_PLATFORM" ]
   } else if (is_mingw) {
     cflags = [ "-DWINDOWS_PLATFORM" ]
@@ -751,8 +751,8 @@ ohos_source_set("crypto_source") {
       "crypto/sha/sha256-armv4.S",
       "crypto/sha/sha512-armv4.S",
     ]
-  } else if (current_cpu == "arm64" &&
-             !(current_os == "linux" || host_os == "mac")) {
+  } else if ((current_cpu == "arm64" || current_cpu == "x86_64") &&
+             !(current_os == "linux" || host_os == "mac" || is_mingw)) {
     sources += [
       "crypto/aes/aes_core.c",
       "crypto/aes/asm/arm64/aesv8-armx.S",
@@ -878,7 +878,8 @@ config("ssl_config") {
 
   if (current_cpu == "arm" && host_os != "mac") {
     cflags += [ "-DOPENSSL_ARM_PLATFORM" ]
-  } else if (current_cpu == "arm64" && host_os != "mac") {
+  } else if ((current_cpu == "arm64" || current_cpu == "x86_64") &&
+             !(current_os == "linux" || host_os == "mac" || is_mingw)) {
     cflags += [ "-DOPENSSL_ARM64_PLATFORM" ]
   } else if (is_mingw) {
     cflags -= [ "-fPIC" ]
