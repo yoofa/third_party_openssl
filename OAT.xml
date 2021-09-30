@@ -66,7 +66,7 @@ Note:If the text contains special characters, please escape them according to th
                 <policyitem type="compatibility" name="OpenSSL|LGPLStyleLicense" path="crypto/.*" desc="Compile tool not runs target, running on host build environment only."/>
                 <policyitem type="compatibility" name="OpenSSL|GPLStyleLicense" path="crypto/.*" desc="Compile tool not runs target, running on host build environment only."/>
                 <policyitem type="compatibility" name="Artistic-1.0-Perl" path="external/perl/Text-Template-1.46/.*" desc="Compile tool not runs target, running on host build environment only."/>
-                <policyitem type="compatibility" name="InvalidLicense" path="external/perl/Text-Template-1.46/Text/Template.pm" desc="release file,not need license declare"/>
+		<policyitem type="compatibility" name="InvalidLicense" path="external/perl/Text-Template-1.46/lib/Text/Template.pm" desc="release file,not need license declare"/>
                 <policyitem type="compatibility" name="InvalidLicense" path="NOTES.PERL" desc="release file,not need license declare"/>
             </policy>
         </policylist>
