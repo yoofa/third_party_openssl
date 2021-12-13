@@ -41,7 +41,7 @@ policyList:
     "filetype" is used to check file type in the specified path, supported file types: archive, binary
     "filename" is used to check whether the specified file exists in the specified path(support projectroot in default OAT.xml), supported file names: LICENSE, README, README.OpenSource
 
-4. policyitem name: This field is used for define the license, copyright, "*" means match all, the "!" prefix means could not match this value. For example, "!GPL" means can not use GPL license. 
+4. policyitem name: This field is used for define the license, copyright, "*" means match all, the "!" prefix means could not match this value. For example, "!GPL" means can not use GPL license.
 5. policyitem path: This field is used for define the source file scope to apply this policyitem, the "!" prefix means exclude the files. For example, "!.*/lib/.*" means files in lib dir will be exclude while process this policyitem.
 6. policyitem rule and group: These two fields are used together to merge policy results. "may" policyitems in the same group means any one in this group passed, the result will be passed.
 7. policyitem filefilter: Used to bind filefilter which define filter rules.
@@ -66,7 +66,7 @@ Note:If the text contains special characters, please escape them according to th
                 <policyitem type="compatibility" name="OpenSSL|LGPLStyleLicense" path="crypto/.*" desc="Compile tool not runs target, running on host build environment only."/>
                 <policyitem type="compatibility" name="OpenSSL|GPLStyleLicense" path="crypto/.*" desc="Compile tool not runs target, running on host build environment only."/>
                 <policyitem type="compatibility" name="Artistic-1.0-Perl" path="external/perl/Text-Template-1.46/.*" desc="Compile tool not runs target, running on host build environment only."/>
-		<policyitem type="compatibility" name="InvalidLicense" path="external/perl/Text-Template-1.46/lib/Text/Template.pm" desc="release file,not need license declare"/>
+                <policyitem type="compatibility" name="InvalidLicense" path="external/perl/Text-Template-1.46/lib/Text/Template.pm" desc="release file,not need license declare"/>
                 <policyitem type="compatibility" name="InvalidLicense" path="NOTES.PERL" desc="release file,not need license declare"/>
             </policy>
         </policylist>
