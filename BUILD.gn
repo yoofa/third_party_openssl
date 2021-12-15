@@ -16,6 +16,7 @@ config("crypto_config") {
   ]
   cflags = [
     "-Wall",
+    "-Wno-implicit-fallthrough",
     "-pthread",
     "-fPIC",
     "-Wa,--noexecstack",
