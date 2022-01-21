@@ -1,0 +1,33 @@
+{
+    "name": "@ohos/openssl",
+    "description": "implementing the Transport Layer Security (TLS) protocols (including SSLv3) as well as a full-strength general purpose cryptographic library",
+    "version": "3.1",
+    "license": "OpenSSL,Original SSLeay",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/openssl"
+    },
+    "dirs": {},
+    "scripts": {},
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "thirdparty_openssl",
+        "subsystem": "",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}
