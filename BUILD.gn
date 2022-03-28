@@ -859,6 +859,15 @@ ohos_static_library("libcrypto_static") {
   remove_configs = [ "//build/config/coverage:default_coverage" ]
 }
 
+ohos_shared_library("libcrypto_shared") {
+  deps = [ ":crypto_source" ]
+  output_name = "libcrypto_openssl"
+  subsystem_name = "security"
+  part_name = "huks"
+  public_configs = [ ":crypto_config_public" ]
+  remove_configs = [ "//build/config/coverage:default_coverage" ]
+}
+
 config("ssl_config") {
   include_dirs = [
     "./",
