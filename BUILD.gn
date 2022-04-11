@@ -866,6 +866,10 @@ ohos_shared_library("libcrypto_shared") {
   part_name = "huks"
   public_configs = [ ":crypto_config_public" ]
   remove_configs = [ "//build/config/coverage:default_coverage" ]
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 config("ssl_config") {
