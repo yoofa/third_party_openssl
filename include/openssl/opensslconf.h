@@ -10,7 +10,7 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifdef OPENSSL_ARM64_PLATFORM
+#if defined(OPENSSL_ARM64_PLATFORM) || defined(OPENSSL_X86_64_PLATFORM)
 #include <openssl/opensslv.h>
 
 #ifdef  __cplusplus
@@ -212,12 +212,16 @@ extern "C" {
 # undef THIRTY_TWO_BIT
 #endif
 
+#ifdef OPENSSL_ARM64_PLATFORM
 #define RC4_INT unsigned char
+#else
+#define RC4_INT unsigned int
+#endif
 
 #ifdef  __cplusplus
 }
 #endif
-#endif // OPENSSL_ARM64_PLATFORM
+#endif // OPENSSL_ARM64_PLATFORM || OPENSSL_X86_64_PLATFORM
 
 #ifdef OPENSSL_ARM_PLATFORM
 #include <openssl/opensslv.h>
@@ -545,6 +549,11 @@ extern "C" {
 # define DECLARE_DEPRECATED(f)   f;
 # ifdef __GNUC__
 #  if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0)
+#   undef DECLARE_DEPRECATED
+#   define DECLARE_DEPRECATED(f)    f __attribute__ ((deprecated));
+#  endif
+# elif defined(__SUNPRO_C)
+#  if (__SUNPRO_C >= 0x5130)
 #   undef DECLARE_DEPRECATED
 #   define DECLARE_DEPRECATED(f)    f __attribute__ ((deprecated));
 #  endif
