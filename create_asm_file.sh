@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+# Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
 # Description: This script is used to generate .S files.
 # Create: 2020-05-30
 
@@ -59,6 +59,59 @@ perl crypto/sha/asm/keccak1600-armv8.pl linux64 crypto/sha/keccak1600-armv8.S
 perl crypto/sha/asm/sha1-armv8.pl linux64 crypto/sha/sha1-armv8.S
 perl crypto/sha/asm/sha512-armv8.pl linux64 crypto/sha/sha256-armv8.S
 perl crypto/sha/asm/sha512-armv8.pl linux64 crypto/sha/sha512-armv8.S
+
+#need x86_64-linux-android-clang cross compile chain in your environment path,
+#otherwise the generated asm files cannot be used
+x86_64-linux-android-clang -v
+rm -rf crypto/aes/asm/x86_64
+rm -rf crypto/bn/asm/x86_64
+rm -rf crypto/chacha/asm/x86_64
+rm -rf crypto/ec/asm/x86_64
+rm -rf crypto/md5/asm/x86_64
+rm -rf crypto/modes/asm/x86_64
+rm -rf crypto/poly1305/asm/x86_64
+rm -rf crypto/rc4/asm/x86_64
+rm -rf crypto/sha/asm/x86_64
+rm -rf crypto/whrlpool/asm/x86_64
+rm -rf crypto/x86_64cpuid.s
+mkdir crypto/aes/asm/x86_64
+mkdir crypto/bn/asm/x86_64
+mkdir crypto/chacha/asm/x86_64
+mkdir crypto/ec/asm/x86_64
+mkdir crypto/md5/asm/x86_64
+mkdir crypto/modes/asm/x86_64
+mkdir crypto/poly1305/asm/x86_64
+mkdir crypto/rc4/asm/x86_64
+mkdir crypto/sha/asm/x86_64
+mkdir crypto/whrlpool/asm/x86_64
+# for x86_64:
+CC="x86_64-linux-android-clang" perl crypto/aes/asm/aesni-mb-x86_64.pl elf crypto/aes/asm/x86_64/aesni-mb-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/aes/asm/aesni-sha1-x86_64.pl elf crypto/aes/asm/x86_64/aesni-sha1-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/aes/asm/aesni-sha256-x86_64.pl elf crypto/aes/asm/x86_64/aesni-sha256-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/aes/asm/aesni-x86_64.pl elf crypto/aes/asm/x86_64/aesni-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/aes/asm/vpaes-x86_64.pl elf crypto/aes/asm/x86_64/vpaes-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/bn/asm/rsaz-avx2.pl elf crypto/bn/asm/x86_64/rsaz-avx2.s
+CC="x86_64-linux-android-clang" perl crypto/bn/asm/rsaz-x86_64.pl elf crypto/bn/asm/x86_64/rsaz-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/bn/asm/x86_64-gf2m.pl elf crypto/bn/asm/x86_64/x86_64-gf2m.s
+CC="x86_64-linux-android-clang" perl crypto/bn/asm/x86_64-mont.pl elf crypto/bn/asm/x86_64/x86_64-mont.s
+CC="x86_64-linux-android-clang" perl crypto/bn/asm/x86_64-mont5.pl elf crypto/bn/asm/x86_64/x86_64-mont5.s
+CC="x86_64-linux-android-clang" perl crypto/chacha/asm/chacha-x86_64.pl elf crypto/chacha/asm/x86_64/chacha-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/ec/asm/ecp_nistz256-x86_64.pl elf crypto/ec/asm/x86_64/ecp_nistz256-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/ec/asm/x25519-x86_64.pl elf crypto/ec/asm/x86_64/x25519-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/md5/asm/md5-x86_64.pl elf crypto/md5/asm/x86_64/md5-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/modes/asm/aesni-gcm-x86_64.pl elf crypto/modes/asm/x86_64/aesni-gcm-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/modes/asm/ghash-x86_64.pl elf crypto/modes/asm/x86_64/ghash-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/poly1305/asm/poly1305-x86_64.pl elf crypto/poly1305/asm/x86_64/poly1305-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/rc4/asm/rc4-md5-x86_64.pl elf crypto/rc4/asm/x86_64/rc4-md5-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/rc4/asm/rc4-x86_64.pl elf crypto/rc4/asm/x86_64/rc4-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/sha/asm/keccak1600-x86_64.pl elf crypto/sha/asm/x86_64/keccak1600-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/sha/asm/sha1-mb-x86_64.pl elf crypto/sha/asm/x86_64/sha1-mb-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/sha/asm/sha1-x86_64.pl elf crypto/sha/asm/x86_64/sha1-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/sha/asm/sha256-mb-x86_64.pl elf crypto/sha/asm/x86_64/sha256-mb-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/sha/asm/sha512-x86_64.pl elf crypto/sha/asm/x86_64/sha256-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/sha/asm/sha512-x86_64.pl elf crypto/sha/asm/x86_64/sha512-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/whrlpool/asm/wp-x86_64.pl elf crypto/whrlpool/asm/x86_64/wp-x86_64.s
+CC="x86_64-linux-android-clang" perl crypto/x86_64cpuid.pl elf crypto/x86_64cpuid.s
 if [ $? -ne 0 ]; then
     error
 else
