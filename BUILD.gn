@@ -76,6 +76,26 @@ config("crypto_config") {
       "-DECP_NISTZ256_ASM",
       "-DPOLY1305_ASM",
     ]
+  } else if (current_cpu == "x86_64" && current_os != "mingw") {
+    cflags += [
+      "-DOPENSSL_CPUID_OBJ",
+      "-DOPENSSL_BN_ASM_MONT",
+      "-DSHA1_ASM",
+      "-DSHA256_ASM",
+      "-DSHA512_ASM",
+      "-DKECCAK1600_ASM",
+      "-DVPAES_ASM",
+      "-DECP_NISTZ256_ASM",
+      "-DPOLY1305_ASM",
+      "-DOPENSSL_IA32_SSE2",
+      "-DOPENSSL_BN_ASM_MONT5",
+      "-DOPENSSL_BN_ASM_GF2m",
+      "-DRC4_ASM",
+      "-DMD5_ASM",
+      "-DAESNI_ASM",
+      "-DGHASH_ASM",
+      "-DX25519_ASM",
+    ]
   } else if (is_mingw) {
     cflags -= [
       "-fPIC",
@@ -133,6 +153,8 @@ config("crypto_config_public") {
   } else if (current_cpu == "arm64" &&
              !(current_os == "linux" || host_os == "mac")) {
     cflags = [ "-DOPENSSL_ARM64_PLATFORM" ]
+  } else if (current_cpu == "x86_64" && current_os != "mingw") {
+    cflags = [ "-DOPENSSL_X86_64_PLATFORM" ]
   } else if (is_mingw) {
     cflags = [ "-DWINDOWS_PLATFORM" ]
   } else if (current_os == "linux" || host_os == "mac") {
@@ -784,6 +806,44 @@ ohos_source_set("crypto_source") {
       "crypto/sha/sha256-armv8.S",
       "crypto/sha/sha512-armv8.S",
     ]
+  } else if (current_cpu == "x86_64" && current_os != "mingw") {
+    sources -= [
+      "crypto/rc4/rc4_enc.c",
+      "crypto/rc4/rc4_skey.c",
+      "crypto/whrlpool/wp_block.c",
+    ]
+    sources += [
+      "crypto/aes/aes_core.c",
+      "crypto/aes/asm/x86_64/aesni-mb-x86_64.s",
+      "crypto/aes/asm/x86_64/aesni-sha1-x86_64.s",
+      "crypto/aes/asm/x86_64/aesni-sha256-x86_64.s",
+      "crypto/aes/asm/x86_64/aesni-x86_64.s",
+      "crypto/aes/asm/x86_64/vpaes-x86_64.s",
+      "crypto/bn/asm/x86_64/rsaz-avx2.s",
+      "crypto/bn/asm/x86_64/rsaz-x86_64.s",
+      "crypto/bn/asm/x86_64/x86_64-gf2m.s",
+      "crypto/bn/asm/x86_64/x86_64-mont.s",
+      "crypto/bn/asm/x86_64/x86_64-mont5.s",
+      "crypto/bn/rsaz_exp.c",
+      "crypto/chacha/asm/x86_64/chacha-x86_64.s",
+      "crypto/ec/asm/x86_64/ecp_nistz256-x86_64.s",
+      "crypto/ec/asm/x86_64/x25519-x86_64.s",
+      "crypto/ec/ecp_nistz256.c",
+      "crypto/md5/asm/x86_64/md5-x86_64.s",
+      "crypto/modes/asm/x86_64/aesni-gcm-x86_64.s",
+      "crypto/modes/asm/x86_64/ghash-x86_64.s",
+      "crypto/poly1305/asm/x86_64/poly1305-x86_64.s",
+      "crypto/rc4/asm/x86_64/rc4-md5-x86_64.s",
+      "crypto/rc4/asm/x86_64/rc4-x86_64.s",
+      "crypto/sha/asm/x86_64/keccak1600-x86_64.s",
+      "crypto/sha/asm/x86_64/sha1-mb-x86_64.s",
+      "crypto/sha/asm/x86_64/sha1-x86_64.s",
+      "crypto/sha/asm/x86_64/sha256-mb-x86_64.s",
+      "crypto/sha/asm/x86_64/sha256-x86_64.s",
+      "crypto/sha/asm/x86_64/sha512-x86_64.s",
+      "crypto/whrlpool/asm/x86_64/wp-x86_64.s",
+      "crypto/x86_64cpuid.s",
+    ]
   } else if (is_mingw || (current_os == "linux" || host_os == "mac")) {
     sources += [
       "crypto/aes/aes_core.c",
@@ -908,6 +968,8 @@ config("ssl_config") {
   } else if (current_cpu == "arm64" &&
              !(current_os == "linux" || host_os == "mac")) {
     cflags += [ "-DOPENSSL_ARM64_PLATFORM" ]
+  } else if (current_cpu == "x86_64" && current_os != "mingw") {
+    cflags += [ "-DOPENSSL_X86_64_PLATFORM" ]
   } else if (is_mingw) {
     cflags -= [ "-fPIC" ]
     cflags += [

@@ -9,7 +9,7 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifdef OPENSSL_ARM64_PLATFORM
+#if defined(OPENSSL_ARM64_PLATFORM) || defined(OPENSSL_X86_64_PLATFORM)
 #ifndef OSSL_CRYPTO_BN_CONF_H
 # define OSSL_CRYPTO_BN_CONF_H
 
@@ -27,7 +27,7 @@
 #undef THIRTY_TWO_BIT
 
 #endif
-#endif // OPENSSL_ARM64_PLATFORM
+#endif // OPENSSL_ARM64_PLATFORM || OPENSSL_X86_64_PLATFORM
 
 #ifdef OPENSSL_ARM_PLATFORM
 #ifndef OSSL_CRYPTO_BN_CONF_H
