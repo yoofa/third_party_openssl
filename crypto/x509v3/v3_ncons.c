@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2018 The OpenSSL Project Authors. All Rights Reserved.
+ * Copyright 2003-2021 The OpenSSL Project Authors. All Rights Reserved.
  *
  * Licensed under the OpenSSL license (the "License").  You may not use
  * this file except in compliance with the License.  You can obtain a copy
@@ -602,6 +602,9 @@ static int nc_email(ASN1_IA5STRING *eml, ASN1_IA5STRING *base)
         if (baseat != baseptr) {
             if ((baseat - baseptr) != (emlat - emlptr))
                 return X509_V_ERR_PERMITTED_VIOLATION;
+            if (memchr(baseptr, 0, baseat - baseptr) ||
+                memchr(emlptr, 0, emlat - emlptr))
+                return X509_V_ERR_UNSUPPORTED_NAME_SYNTAX;
             /* Case sensitive match of local part */
             if (strncmp(baseptr, emlptr, emlat - emlptr))
                 return X509_V_ERR_PERMITTED_VIOLATION;
