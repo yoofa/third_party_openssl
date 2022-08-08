@@ -848,44 +848,6 @@ ohos_source_set("crypto_source") {
       "crypto/whrlpool/asm/x86_64/wp-x86_64.s",
       "crypto/x86_64cpuid.s",
     ]
-  } else if (current_cpu == "x86_64" && current_os != "mingw") {
-    sources -= [
-      "crypto/rc4/rc4_enc.c",
-      "crypto/rc4/rc4_skey.c",
-      "crypto/whrlpool/wp_block.c",
-    ]
-    sources += [
-      "crypto/aes/aes_core.c",
-      "crypto/aes/asm/x86_64/aesni-mb-x86_64.s",
-      "crypto/aes/asm/x86_64/aesni-sha1-x86_64.s",
-      "crypto/aes/asm/x86_64/aesni-sha256-x86_64.s",
-      "crypto/aes/asm/x86_64/aesni-x86_64.s",
-      "crypto/aes/asm/x86_64/vpaes-x86_64.s",
-      "crypto/bn/asm/x86_64/rsaz-avx2.s",
-      "crypto/bn/asm/x86_64/rsaz-x86_64.s",
-      "crypto/bn/asm/x86_64/x86_64-gf2m.s",
-      "crypto/bn/asm/x86_64/x86_64-mont.s",
-      "crypto/bn/asm/x86_64/x86_64-mont5.s",
-      "crypto/bn/rsaz_exp.c",
-      "crypto/chacha/asm/x86_64/chacha-x86_64.s",
-      "crypto/ec/asm/x86_64/ecp_nistz256-x86_64.s",
-      "crypto/ec/asm/x86_64/x25519-x86_64.s",
-      "crypto/ec/ecp_nistz256.c",
-      "crypto/md5/asm/x86_64/md5-x86_64.s",
-      "crypto/modes/asm/x86_64/aesni-gcm-x86_64.s",
-      "crypto/modes/asm/x86_64/ghash-x86_64.s",
-      "crypto/poly1305/asm/x86_64/poly1305-x86_64.s",
-      "crypto/rc4/asm/x86_64/rc4-md5-x86_64.s",
-      "crypto/rc4/asm/x86_64/rc4-x86_64.s",
-      "crypto/sha/asm/x86_64/keccak1600-x86_64.s",
-      "crypto/sha/asm/x86_64/sha1-mb-x86_64.s",
-      "crypto/sha/asm/x86_64/sha1-x86_64.s",
-      "crypto/sha/asm/x86_64/sha256-mb-x86_64.s",
-      "crypto/sha/asm/x86_64/sha256-x86_64.s",
-      "crypto/sha/asm/x86_64/sha512-x86_64.s",
-      "crypto/whrlpool/asm/x86_64/wp-x86_64.s",
-      "crypto/x86_64cpuid.s",
-    ]
   } else if (is_mingw || (current_os == "linux" || host_os == "mac")) {
     sources += [
       "crypto/aes/aes_core.c",
