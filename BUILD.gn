@@ -1059,3 +1059,16 @@ ohos_source_set("ssl_source") {
 
   remove_configs = [ "//build/config/coverage:default_coverage" ]
 }
+
+ohos_shared_library("libssl_shared") {
+  deps = [
+    ":crypto_source",
+    ":ssl_source",
+  ]
+  output_name = "libssl_openssl"
+  subsystem_name = "developtools"
+  part_name = "profiler"
+  public_configs = [ ":ssl_config_public" ]
+  remove_configs = [ "//build/config/coverage:default_coverage" ]
+  install_images = [ "system" ]
+}
