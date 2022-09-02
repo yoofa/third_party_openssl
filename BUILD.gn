@@ -923,13 +923,26 @@ ohos_static_library("libcrypto_static") {
   remove_configs = [ "//build/config/coverage:default_coverage" ]
 }
 
+if (is_mingw || is_mac) {
+  ohos_shared_library("libcrypto_restool") {
+    if (is_mingw) {
+      lib_dirs = [ "//prebuilts/mingw-w64/ohos/linux-x86_64/clang-mingw/x86_64-w64-mingw32/lib" ]
+      libs = [ "ws2_32" ]
+    }
+    deps = [ ":crypto_source" ]
+    subsystem_name = "security"
+    part_name = "huks"
+    public_configs = [ ":crypto_config_public" ]
+    remove_configs = [ "//build/config/coverage:default_coverage" ]
+    install_images = [
+      "system",
+      "updater",
+    ]
+  }
+}
+
 ohos_shared_library("libcrypto_shared") {
   deps = [ ":crypto_source" ]
-  if (is_mingw) {
-    lib_dirs = [ "//prebuilts/mingw-w64/ohos/linux-x86_64/clang-mingw/x86_64-w64-mingw32/lib" ]
-    libs = [ "ws2_32" ]
-  }
-
   output_name = "libcrypto_openssl"
   subsystem_name = "security"
   part_name = "huks"
