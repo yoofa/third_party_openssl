@@ -11,17 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//build/ohos.gni")
+
 # Only use this to set/unset some cflags, use "platform" variable in gn template to add
 # source code for Windows.
-
-group("openssl") {
-  deps = [
-    ":libcrypto_shared",
-    ":libcrypto_static",
-    ":libssl_shared",
-    ":libssl_static",
-  ]
-}
 
 config("crypto_config") {
   include_dirs = [
@@ -35,7 +28,6 @@ config("crypto_config") {
   cflags = [
     "-Wall",
     "-Wno-implicit-fallthrough",
-    "-Wno-unreachable-code",
     "-pthread",
     "-fPIC",
     "-Wa,--noexecstack",
@@ -104,6 +96,34 @@ config("crypto_config") {
       "-DGHASH_ASM",
       "-DX25519_ASM",
     ]
+  } else if (is_mingw) {
+    cflags -= [
+      "-fPIC",
+      "-DOPENSSL_NO_BF",
+      "-DOPENSSL_NO_CAMELLIA",
+      "-DOPENSSL_NO_CAST",
+      "-DOPENSSL_NO_CT",
+      "-DOPENSSL_NO_RC2",
+      "-DOPENSSL_NO_RMD160",
+    ]
+    cflags += [
+      "-m64",
+      "-DL_ENDIAN",
+      "-DOPENSSL_NO_ASM",
+      "-DOPENSSL_NO_MDC2",
+      "-DOPENSSL_NO_IDEA",
+      "-DUNICODE",
+      "-D_UNICODE",
+      "-DWIN32_LEAN_AND_MEAN",
+      "-D_MT",
+      "-MMD",
+      "-MF",
+      "-c",
+      "-Wno-macro-redefined",
+      "-Wno-constant-conversion",
+      "-Wno-sign-compare",
+      "-Wno-incompatible-pointer-types",
+    ]
   } else if (current_os == "linux" || host_os == "mac") {
     cflags -= [
       "-DOPENSSL_NO_BF",
@@ -139,6 +159,8 @@ config("crypto_config_public") {
     cflags = [ "-DOPENSSL_ARM64_PLATFORM" ]
   } else if (current_cpu == "x86_64" && current_os != "mingw") {
     cflags = [ "-DOPENSSL_X86_64_PLATFORM" ]
+  } else if (is_mingw) {
+    cflags = [ "-DWINDOWS_PLATFORM" ]
   } else if (current_os == "linux" || host_os == "mac") {
     cflags = [ "-DMAC_PLATFORM" ]
   } else {
@@ -146,7 +168,7 @@ config("crypto_config_public") {
   }
 }
 
-source_set("crypto_source") {
+ohos_source_set("crypto_source") {
   sources = [
     "crypto/aes/aes_cbc.c",
     "crypto/aes/aes_cfb.c",
@@ -826,7 +848,7 @@ source_set("crypto_source") {
       "crypto/whrlpool/asm/x86_64/wp-x86_64.s",
       "crypto/x86_64cpuid.s",
     ]
-  } else if (current_os == "linux" || host_os == "mac") {
+  } else if (is_mingw || (current_os == "linux" || host_os == "mac")) {
     sources += [
       "crypto/aes/aes_core.c",
       "crypto/bf/bf_cfb64.c",
@@ -867,6 +889,17 @@ source_set("crypto_source") {
       "crypto/ripemd/rmd_one.c",
       "crypto/sha/keccak1600.c",
     ]
+    if (is_mingw) {
+      sources -= [
+        "crypto/idea/i_cbc.c",
+        "crypto/idea/i_cfb64.c",
+        "crypto/idea/i_ecb.c",
+        "crypto/idea/i_ofb64.c",
+        "crypto/idea/i_skey.c",
+        "crypto/mdc2/mdc2_one.c",
+        "crypto/mdc2/mdc2dgst.c",
+      ]
+    }
   } else {
     sources += [
       "crypto/aes/aes_core.c",
@@ -876,21 +909,49 @@ source_set("crypto_source") {
     ]
   }
 
-  configs += [ ":crypto_config" ]
+  configs = [ ":crypto_config" ]
 
   public_configs = [ ":crypto_config_public" ]
+
+  remove_configs = [ "//build/config/coverage:default_coverage" ]
 }
 
-static_library("libcrypto_static") {
+ohos_static_library("libcrypto_static") {
   deps = [ ":crypto_source" ]
   public_configs = [ ":crypto_config_public" ]
   complete_static_lib = true
+  remove_configs = [ "//build/config/coverage:default_coverage" ]
 }
 
-shared_library("libcrypto_shared") {
+if (is_mingw || is_mac) {
+  ohos_shared_library("libcrypto_restool") {
+    if (is_mingw) {
+      lib_dirs = [ "//prebuilts/mingw-w64/ohos/linux-x86_64/clang-mingw/x86_64-w64-mingw32/lib" ]
+      libs = [ "ws2_32" ]
+    }
+    deps = [ ":crypto_source" ]
+    subsystem_name = "security"
+    part_name = "huks"
+    public_configs = [ ":crypto_config_public" ]
+    remove_configs = [ "//build/config/coverage:default_coverage" ]
+    install_images = [
+      "system",
+      "updater",
+    ]
+  }
+}
+
+ohos_shared_library("libcrypto_shared") {
   deps = [ ":crypto_source" ]
   output_name = "libcrypto_openssl"
+  subsystem_name = "security"
+  part_name = "huks"
   public_configs = [ ":crypto_config_public" ]
+  remove_configs = [ "//build/config/coverage:default_coverage" ]
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 config("ssl_config") {
@@ -931,6 +992,20 @@ config("ssl_config") {
     cflags += [ "-DOPENSSL_ARM64_PLATFORM" ]
   } else if (current_cpu == "x86_64" && current_os != "mingw") {
     cflags += [ "-DOPENSSL_X86_64_PLATFORM" ]
+  } else if (is_mingw) {
+    cflags -= [ "-fPIC" ]
+    cflags += [
+      "-m64",
+      "-DL_ENDIAN",
+      "-DUNICODE",
+      "-D_UNICODE",
+      "-DWIN32_LEAN_AND_MEAN",
+      "-D_MT",
+      "-MMD",
+      "-MF",
+      "-c",
+    ]
+    defines = [ "WINDOWS_PLATFORM" ]
   } else if (host_os == "mac") {
     cflags += [
       "-O3",
@@ -950,7 +1025,7 @@ config("ssl_config_public") {
   include_dirs = [ "//third_party/openssl/include" ]
 }
 
-source_set("ssl_source") {
+ohos_source_set("ssl_source") {
   sources = [
     "ssl/bio_ssl.c",
     "ssl/d1_lib.c",
@@ -999,24 +1074,19 @@ source_set("ssl_source") {
   ]
 
   public_configs = [ ":ssl_config" ]
+
+  remove_configs = [ "//build/config/coverage:default_coverage" ]
 }
 
-static_library("libssl_static") {
-  deps = [
-    ":crypto_source",
-    ":ssl_source",
-  ]
-  public_configs = [
-    ":ssl_config_public",
-    ":crypto_config_public",
-  ]
-}
-
-shared_library("libssl_shared") {
+ohos_shared_library("libssl_shared") {
   deps = [
     ":crypto_source",
     ":ssl_source",
   ]
   output_name = "libssl_openssl"
+  subsystem_name = "developtools"
+  part_name = "profiler"
   public_configs = [ ":ssl_config_public" ]
+  remove_configs = [ "//build/config/coverage:default_coverage" ]
+  install_images = [ "system" ]
 }
