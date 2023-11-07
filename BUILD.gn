@@ -36,6 +36,7 @@ config("crypto_config") {
     "-Wall",
     "-Wno-implicit-fallthrough",
     "-Wno-unreachable-code",
+    "-Wno-unused-but-set-variable",
     "-pthread",
     "-fPIC",
     "-Wa,--noexecstack",
@@ -901,6 +902,11 @@ config("ssl_config") {
     "./crypto/modes",
   ]
   cflags = [
+    "-Wno-implicit-fallthrough",
+    "-Wno-unreachable-code",
+    "-Wno-unreachable-code-break",
+    "-Wno-unreachable-code-return",
+    "-Wno-unused-but-set-variable",
     "-DNDEBUG",
     "-DOPENSSL_NO_STATIC_ENGINE",
     "-DOPENSSL_PIC",
